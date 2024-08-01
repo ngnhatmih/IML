@@ -1,8 +1,0 @@
-[
-{
-  "directory": "C:/Users/ADMIN/Documents/IMGUI/IML/build",
-  "command": "C:/msys64/ucrt64/bin/c++.exe   -g -o CMakeFiles/IML.dir/src/main.cpp.obj -c C:/Users/ADMIN/Documents/IMGUI/IML/src/main.cpp",
-  "file": "C:/Users/ADMIN/Documents/IMGUI/IML/src/main.cpp",
-  "output": "CMakeFiles/IML.dir/src/main.cpp.obj"
-}
-]
