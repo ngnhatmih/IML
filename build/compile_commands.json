@@ -1,0 +1,50 @@
+[
+{
+  "directory": "C:/Users/ngnhatmih/Desktop/ngn/projects/IML/build",
+  "command": "C:/msys64/ucrt64/bin/c++.exe  @CMakeFiles/IML.dir/includes_CXX.rsp -g -o CMakeFiles/IML.dir/src/main.cpp.obj -c C:/Users/ngnhatmih/Desktop/ngn/projects/IML/src/main.cpp",
+  "file": "C:/Users/ngnhatmih/Desktop/ngn/projects/IML/src/main.cpp",
+  "output": "CMakeFiles/IML.dir/src/main.cpp.obj"
+},
+{
+  "directory": "C:/Users/ngnhatmih/Desktop/ngn/projects/IML/build/vendor/imgui",
+  "command": "C:/msys64/ucrt64/bin/c++.exe  @CMakeFiles/imgui.dir/includes_CXX.rsp -g -o CMakeFiles/imgui.dir/imgui.cpp.obj -c C:/Users/ngnhatmih/Desktop/ngn/projects/IML/vendor/imgui/imgui.cpp",
+  "file": "C:/Users/ngnhatmih/Desktop/ngn/projects/IML/vendor/imgui/imgui.cpp",
+  "output": "vendor/imgui/CMakeFiles/imgui.dir/imgui.cpp.obj"
+},
+{
+  "directory": "C:/Users/ngnhatmih/Desktop/ngn/projects/IML/build/vendor/imgui",
+  "command": "C:/msys64/ucrt64/bin/c++.exe  @CMakeFiles/imgui.dir/includes_CXX.rsp -g -o CMakeFiles/imgui.dir/imgui_demo.cpp.obj -c C:/Users/ngnhatmih/Desktop/ngn/projects/IML/vendor/imgui/imgui_demo.cpp",
+  "file": "C:/Users/ngnhatmih/Desktop/ngn/projects/IML/vendor/imgui/imgui_demo.cpp",
+  "output": "vendor/imgui/CMakeFiles/imgui.dir/imgui_demo.cpp.obj"
+},
+{
+  "directory": "C:/Users/ngnhatmih/Desktop/ngn/projects/IML/build/vendor/imgui",
+  "command": "C:/msys64/ucrt64/bin/c++.exe  @CMakeFiles/imgui.dir/includes_CXX.rsp -g -o CMakeFiles/imgui.dir/imgui_draw.cpp.obj -c C:/Users/ngnhatmih/Desktop/ngn/projects/IML/vendor/imgui/imgui_draw.cpp",
+  "file": "C:/Users/ngnhatmih/Desktop/ngn/projects/IML/vendor/imgui/imgui_draw.cpp",
+  "output": "vendor/imgui/CMakeFiles/imgui.dir/imgui_draw.cpp.obj"
+},
+{
+  "directory": "C:/Users/ngnhatmih/Desktop/ngn/projects/IML/build/vendor/imgui",
+  "command": "C:/msys64/ucrt64/bin/c++.exe  @CMakeFiles/imgui.dir/includes_CXX.rsp -g -o CMakeFiles/imgui.dir/imgui_tables.cpp.obj -c C:/Users/ngnhatmih/Desktop/ngn/projects/IML/vendor/imgui/imgui_tables.cpp",
+  "file": "C:/Users/ngnhatmih/Desktop/ngn/projects/IML/vendor/imgui/imgui_tables.cpp",
+  "output": "vendor/imgui/CMakeFiles/imgui.dir/imgui_tables.cpp.obj"
+},
+{
+  "directory": "C:/Users/ngnhatmih/Desktop/ngn/projects/IML/build/vendor/imgui",
+  "command": "C:/msys64/ucrt64/bin/c++.exe  @CMakeFiles/imgui.dir/includes_CXX.rsp -g -o CMakeFiles/imgui.dir/imgui_widgets.cpp.obj -c C:/Users/ngnhatmih/Desktop/ngn/projects/IML/vendor/imgui/imgui_widgets.cpp",
+  "file": "C:/Users/ngnhatmih/Desktop/ngn/projects/IML/vendor/imgui/imgui_widgets.cpp",
+  "output": "vendor/imgui/CMakeFiles/imgui.dir/imgui_widgets.cpp.obj"
+},
+{
+  "directory": "C:/Users/ngnhatmih/Desktop/ngn/projects/IML/build/vendor/imgui",
+  "command": "C:/msys64/ucrt64/bin/c++.exe  @CMakeFiles/imgui.dir/includes_CXX.rsp -g -o CMakeFiles/imgui.dir/imgui_impl_sdl3.cpp.obj -c C:/Users/ngnhatmih/Desktop/ngn/projects/IML/vendor/imgui/imgui_impl_sdl3.cpp",
+  "file": "C:/Users/ngnhatmih/Desktop/ngn/projects/IML/vendor/imgui/imgui_impl_sdl3.cpp",
+  "output": "vendor/imgui/CMakeFiles/imgui.dir/imgui_impl_sdl3.cpp.obj"
+},
+{
+  "directory": "C:/Users/ngnhatmih/Desktop/ngn/projects/IML/build/vendor/imgui",
+  "command": "C:/msys64/ucrt64/bin/c++.exe  @CMakeFiles/imgui.dir/includes_CXX.rsp -g -o CMakeFiles/imgui.dir/imgui_impl_sdlrenderer3.cpp.obj -c C:/Users/ngnhatmih/Desktop/ngn/projects/IML/vendor/imgui/imgui_impl_sdlrenderer3.cpp",
+  "file": "C:/Users/ngnhatmih/Desktop/ngn/projects/IML/vendor/imgui/imgui_impl_sdlrenderer3.cpp",
+  "output": "vendor/imgui/CMakeFiles/imgui.dir/imgui_impl_sdlrenderer3.cpp.obj"
+}
+]
