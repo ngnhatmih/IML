@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 project(imgui)
 
-add_library(imgui::imgui STATIC
+add_library(imgui STATIC
     ${IMGUI_SOURCE_DIR}/imgui.cpp
     ${IMGUI_SOURCE_DIR}/imgui.h
     ${IMGUI_SOURCE_DIR}/imconfig.h
@@ -19,6 +19,8 @@ add_library(imgui::imgui STATIC
     ${IMGUI_SOURCE_DIR}/imgui_impl_sdlrenderer3.h
     ${IMGUI_SOURCE_DIR}/imgui_impl_sdlrenderer3.cpp
 )
+
+add_library(imgui::imgui ALIAS imgui)
 
 target_include_directories(imgui PUBLIC ${IMGUI_SOURCE_DIR})
 target_link_libraries(imgui PUBLIC SDL3::SDL3)

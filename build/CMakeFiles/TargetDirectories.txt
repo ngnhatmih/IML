@@ -1,0 +1,11 @@
+C:/Users/ngnhatmih/Desktop/ngn/projects/imgui/IML/build/CMakeFiles/IML.dir
+C:/Users/ngnhatmih/Desktop/ngn/projects/imgui/IML/build/CMakeFiles/edit_cache.dir
+C:/Users/ngnhatmih/Desktop/ngn/projects/imgui/IML/build/CMakeFiles/rebuild_cache.dir
+C:/Users/ngnhatmih/Desktop/ngn/projects/imgui/IML/build/vendor/imgui/CMakeFiles/imgui.dir
+C:/Users/ngnhatmih/Desktop/ngn/projects/imgui/IML/build/vendor/imgui/CMakeFiles/edit_cache.dir
+C:/Users/ngnhatmih/Desktop/ngn/projects/imgui/IML/build/vendor/imgui/CMakeFiles/rebuild_cache.dir
+C:/Users/ngnhatmih/Desktop/ngn/projects/imgui/IML/build/vendor/sdl/CMakeFiles/SDL3-shared.dir
+C:/Users/ngnhatmih/Desktop/ngn/projects/imgui/IML/build/vendor/sdl/CMakeFiles/SDL3_test.dir
+C:/Users/ngnhatmih/Desktop/ngn/projects/imgui/IML/build/vendor/sdl/CMakeFiles/uninstall.dir
+C:/Users/ngnhatmih/Desktop/ngn/projects/imgui/IML/build/vendor/sdl/CMakeFiles/edit_cache.dir
+C:/Users/ngnhatmih/Desktop/ngn/projects/imgui/IML/build/vendor/sdl/CMakeFiles/rebuild_cache.dir
