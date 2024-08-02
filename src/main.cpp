@@ -1,7 +1,6 @@
 #include <SDL3/SDL.h>
 #include <iostream>
 
-// int -> boolean;
 SDL_Window *w = 0;
 SDL_Renderer *r = 0;
 
@@ -30,13 +29,42 @@ int main() {
     }
 
     SDL_Event e;
+    SDL_Color color;
+    SDL_Color colors[12] = {
+        {255, 0,   0,   0},
+        {255, 127, 0,   0},
+        {255, 255, 0,   0},
+        {127, 255, 0,   0},
+        {0,   255, 0,   0},
+        {0,   255, 127, 0},
+        {0,   255, 255, 0},
+        {0,   127, 255, 0},
+        {0,   0,   255, 0},
+        {127, 0,   255, 0},
+        {255, 0,   255, 0},
+        {255, 0,   127, 0},
+    };
+
+    int i = 0;
+
     while (1) {
+        color = colors[i];
         if (SDL_PollEvent(&e)) {
             if (e.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED) {
                 break;
             }
         }
+        SDL_RenderClear(r);
+        SDL_SetRenderDrawColor(r, color.r, color.g, color.b, 0);
+        SDL_RenderPresent(r);
+        if (i++ == 13) {
+            i = 0;
+        }
+
+        SDL_Delay(100);
     }
+
+    
     
 
     SDL_DestroyRenderer(r);
