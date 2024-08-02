@@ -8,7 +8,7 @@
 int main() {
     // sdl init
     SDL_Init(SDL_INIT_EVENTS || SDL_INIT_VIDEO);
-    SDL_Window *w = SDL_CreateWindow("ss", 1200, 500, 0);
+    SDL_Window *w = SDL_CreateWindow("ss", 1200, 500, SDL_WINDOW_RESIZABLE);
     SDL_Renderer *r = SDL_CreateRenderer(w, 0);
     SDL_ShowWindow(w);
 
@@ -25,7 +25,7 @@ int main() {
     SDL_Event e;
     while (1) {
         ImGui_ImplSDL3_ProcessEvent(&e);
-        static float rgb[] = {255, 255, 0};
+        static float rgb[] = {1, 1, 1}; // float is from 0 to 1
 
         if (SDL_PollEvent(&e)) {
             if (e.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED) {
