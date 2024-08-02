@@ -4,7 +4,10 @@ project(IML)
 
 set(SOURCE_FILES 
     src/main.cpp
+    src/theme.cpp
 ) 
+
+include_directories(include)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
