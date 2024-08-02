@@ -25,6 +25,8 @@ int main() {
     SDL_Event e;
     while (1) {
         ImGui_ImplSDL3_ProcessEvent(&e);
+        static float rgb[] = {255, 255, 0};
+
         if (SDL_PollEvent(&e)) {
             if (e.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED) {
                 break;
@@ -57,12 +59,16 @@ int main() {
                 ImGui::StyleColorsPurpleComfy();
             }
 
+            
+            ImGui::ColorEdit3("my color", rgb);
+
             ImGui::End();
         }
         
 
         ImGui::Render();
         SDL_RenderClear(r);
+        SDL_SetRenderDrawColorFloat(r ,rgb[0], rgb[1], rgb[2], 0);
         ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), r);
         SDL_RenderPresent(r);
     }
