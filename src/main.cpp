@@ -43,7 +43,7 @@ int main() {
                 ImGui::Text("child");   
                 ImGui::TreePop(); 
             }
-
+            
             if (ImGui::TreeNode("Imgui style")) {
                 static int current_item = 0;
                 const char *const items[] = {"classic", "dark", "light", "Moonlight", "Dark ruda"};
@@ -69,10 +69,13 @@ int main() {
 
             if (ImGui::TreeNode("Information")) {               
                 ImGui::Text("mouse position: (%.2f, %.2f)", ImGui::GetMousePos().x, ImGui::GetMousePos().y);
+                ImGui::Text("Window position: (%.2f, %.2f)", ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
                 ImGui::Text("Cursor screen position: (%.2f, %.2f)", ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y);
                 ImGui::Text("Cursor position: (%.2f, %.2f)", ImGui::GetCursorPos().x, ImGui::GetCursorPos().y);
                 ImGui::Text("Content region available: (%.2f, %.2f)", ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
                 ImGui::Text("Content region max: (%.2f, %.2f)", ImGui::GetContentRegionMax().x, ImGui::GetContentRegionMax().y);
+                ImGui::Text("Window content region max: (%.2f, %.2f)", ImGui::GetWindowContentRegionMax().x, ImGui::GetWindowContentRegionMax().y);
+                ImGui::Text("Window content region min: (%.2f, %.2f)", ImGui::GetWindowContentRegionMin().x, ImGui::GetWindowContentRegionMin().y);
                 ImGui::Text("Window padding: (%.2f, %.2f)", ImGui::GetStyle().WindowPadding.x, ImGui::GetStyle().WindowPadding.y);
                 ImGui::TreePop();
             }
