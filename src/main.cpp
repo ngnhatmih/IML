@@ -42,26 +42,38 @@ int main() {
             ImGui::Begin("change style");
             ImGui::SetWindowSize(ImVec2(1000, 200), ImGuiCond_FirstUseEver);
             
-            const char* styles[] = {"dark", "light", "classic", "ruda", "moonlight", "purple comfy"};
-            static int current = 0;
-            ImGui::ListBox("style list box", &current, styles, 6);
-            if (styles[current] == "dark") {
-                ImGui::StyleColorsDark();
-            } else if (styles[current] == "light") {
-                ImGui::StyleColorsLight();
-            } else if (styles[current] == "ruda") {
-                ImGui::StyleColorsDarkRuda();
-            } else if (styles[current] == "classic") {
-                ImGui::StyleColorsClassic();
-            } else if (styles[current] == "moonlight") {
-                ImGui::StyleColorsMoonlight();
-            } else if (styles[current] == "purple comfy") {
-                ImGui::StyleColorsPurpleComfy();
+            if (ImGui::TreeNode("CHANGE STYLE")) {
+                const char* styles[] = {"dark", "light", "classic", "ruda", "moonlight", "purple comfy"};
+                static int current = 0;
+                ImGui::ListBox("style list box", &current, styles, 6);
+                if (styles[current] == "dark") {
+                    ImGui::StyleColorsDark();
+                } else if (styles[current] == "light") {
+                    ImGui::StyleColorsLight();
+                } else if (styles[current] == "ruda") {
+                    ImGui::StyleColorsDarkRuda();
+                } else if (styles[current] == "classic") {
+                    ImGui::StyleColorsClassic();
+                } else if (styles[current] == "moonlight") {
+                    ImGui::StyleColorsMoonlight();
+                } else if (styles[current] == "purple comfy") {
+                    ImGui::StyleColorsPurpleComfy();
+                }
+
+                ImGui::TreePop();
             }
 
+            if (ImGui::TreeNode("CHANGE BACKGROUND COLOR")) {
+                ImGui::ColorEdit3("my color", rgb);
+                ImGui::TreePop();
+            }
             
-            ImGui::ColorEdit3("my color", rgb);
-
+            if (ImGui::TreeNode("STUFFS")) {
+                ImGui::Text("GetMousePos: (%.2f, %.2f)", ImGui::GetMousePos().x, ImGui::GetMousePos().y);
+                ImGui::Text("GetCursorScreenPos: (%.2f, %.2f)", ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y);
+                ImGui::Text("GetContentRegionAvail: (%.2f, %.2f)", ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
+                ImGui::TreePop();
+            }
             ImGui::End();
         }
         
