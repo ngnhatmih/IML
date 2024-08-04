@@ -34,6 +34,9 @@ int main() {
         ImGui_ImplSDLRenderer3_NewFrame();
         ImGui::NewFrame();
 
+        ImGuiID dockspace_id = ImGui::GetID("MyDockspace");
+        ImGui::DockSpaceOverViewport(dockspace_id);
+        
         static float rgb[] = {1, 1, 1};
         {
             ImGui::Begin("imgui");
