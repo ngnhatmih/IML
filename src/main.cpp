@@ -1,7 +1,7 @@
-#include<SDL3/SDL.h>
-#include<imgui.h>
-#include<imgui_impl_sdl3.h>
-#include<imgui_impl_sdlrenderer3.h>
+#include <SDL3/SDL.h>
+#include "imgui.h"
+#include "imgui_impl_sdl3.h"
+#include "imgui_impl_sdlrenderer3.h"
 
 #include<theme.h>
 
@@ -67,7 +67,7 @@ int main() {
                 ImGui::ColorEdit3("", rgb);
                 ImGui::TreePop();
             }
-
+    
             if (ImGui::TreeNode("Information")) {               
                 ImGui::Text("mouse position: (%.2f, %.2f)", ImGui::GetMousePos().x, ImGui::GetMousePos().y);
                 ImGui::Text("Window position: (%.2f, %.2f)", ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
@@ -78,6 +78,10 @@ int main() {
                 ImGui::Text("Window content region max: (%.2f, %.2f)", ImGui::GetWindowContentRegionMax().x, ImGui::GetWindowContentRegionMax().y);
                 ImGui::Text("Window content region min: (%.2f, %.2f)", ImGui::GetWindowContentRegionMin().x, ImGui::GetWindowContentRegionMin().y);
                 ImGui::Text("Window padding: (%.2f, %.2f)", ImGui::GetStyle().WindowPadding.x, ImGui::GetStyle().WindowPadding.y);
+                
+                ImGuiViewport *viewport = ImGui::GetMainViewport();
+                ImGui::Text("Viewport position: (%.2f, %.2f)", viewport->Pos.x, viewport->Pos.y);
+                ImGui::Text("Viewport position: (%.2f, %.2f)", viewport->GetCenter().x, viewport->GetCenter().y);
                 ImGui::TreePop();
             }
 
@@ -89,7 +93,7 @@ int main() {
             ImGui::SetWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
             ImGui::End();
         }
-
+        
         ImGui::Render();
         SDL_RenderClear(r);
         SDL_SetRenderDrawColorFloat(r, rgb[0], rgb[1], rgb[2], 0);
