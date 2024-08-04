@@ -13,6 +13,7 @@ int main() {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO(); (void) io;
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
     ImGui_ImplSDL3_InitForSDLRenderer(w, r);
     ImGui_ImplSDLRenderer3_Init(r);
@@ -80,6 +81,12 @@ int main() {
                 ImGui::TreePop();
             }
 
+            ImGui::End();
+        }
+
+        {
+            ImGui::Begin("hello");
+            ImGui::SetWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
             ImGui::End();
         }
 
