@@ -34,7 +34,7 @@ int main() {
         ImGui_ImplSDLRenderer3_NewFrame();
         ImGui::NewFrame();
 
-        ImGuiID dockspace_id = ImGui::GetID("MyDockspace");
+        ImGuiID dockspace_id = ImGui::GetID("My dockspace");
         ImGui::DockSpaceOverViewport(dockspace_id);
         
         static float rgb[] = {1, 1, 1};
@@ -91,9 +91,30 @@ int main() {
             ImGui::End();
         }
 
-        {
-            ImGui::Begin("hello");
+        {   
+            ImGui::Begin("window 2");
             ImGui::SetWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
+            static char text[32] = "";
+            struct text_filter {
+                static int filterText(ImGuiInputTextCallbackData* data) {
+                    if (data->EventChar>='a' && data->EventChar<=9)
+                }
+
+            };
+            ImGui::InputText("default", text, 32);
+            ImGui::InputText("decimal", text, 32, ImGuiInputTextFlags_CharsDecimal);
+            ImGui::InputText("hexadecimal", text, 32, ImGuiInputTextFlags_CharsHexadecimal | ImGuiInputTextFlags_CharsUppercase);
+            ImGui::InputText("no blank", text, 32, ImGuiInputTextFlags_CharsNoBlank);
+
+            ImGui::End();
+        }
+
+        {
+            ImGui::Begin("window 3");
+            ImGui::SetWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
+
+            static char text[60 * 60] = "";
+            ImGui::InputTextMultiline("label", text, IM_ARRAYSIZE(text), ImVec2(-FLT_MIN, -FLT_MIN));
             ImGui::End();
         }
         
