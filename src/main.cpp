@@ -38,6 +38,7 @@ int main() {
         ImGui::DockSpaceOverViewport(dockspace_id);
         
         static float rgb[] = {1, 1, 1};
+        // window 1
         {
             ImGui::Begin("imgui");
             ImGui::SetWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
@@ -51,7 +52,7 @@ int main() {
             if (ImGui::TreeNode("Imgui style")) {
                 static int current_item = 0;
                 const char *const items[] = {"classic", "dark", "light", "Moonlight", "Dark ruda"};
-                ImGui::ListBox("", &current_item, items, 5);
+                ImGui::ListBox("", &current_item, items, IM_ARRAYSIZE(items));
                 if (current_item == 0) {
                     ImGui::StyleColorsClassic();        
                 } else if (current_item == 1) {
@@ -66,7 +67,7 @@ int main() {
                 ImGui::TreePop();
             } 
 
-            if (ImGui::TreeNode("SDL style")) {
+            if (ImGui::TreeNode("change background color")) {
                 ImGui::ColorEdit3("", rgb);
                 ImGui::TreePop();
             }
@@ -91,24 +92,23 @@ int main() {
             ImGui::End();
         }
 
+        // window 2
         {   
             ImGui::Begin("window 2");
             ImGui::SetWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
-            static char text[32] = "";
-            struct text_filter {
-                static int filterText(ImGuiInputTextCallbackData* data) {
-                    if (data->EventChar>='a' && data->EventChar<=9)
-                }
-
-            };
-            ImGui::InputText("default", text, 32);
-            ImGui::InputText("decimal", text, 32, ImGuiInputTextFlags_CharsDecimal);
-            ImGui::InputText("hexadecimal", text, 32, ImGuiInputTextFlags_CharsHexadecimal | ImGuiInputTextFlags_CharsUppercase);
-            ImGui::InputText("no blank", text, 32, ImGuiInputTextFlags_CharsNoBlank);
+            static char text1[32] = "";
+            static char text2[32] = "";
+            static char text3[32] = "";
+            static char text4[32] = "";
+            ImGui::InputText("default", text1, IM_ARRAYSIZE(text1));
+            ImGui::InputText("decimal", text2, IM_ARRAYSIZE(text2), ImGuiInputTextFlags_CharsDecimal);
+            ImGui::InputText("hexadecimal", text3, IM_ARRAYSIZE(text3), ImGuiInputTextFlags_CharsHexadecimal | ImGuiInputTextFlags_CharsUppercase);
+            ImGui::InputText("no blank", text4, IM_ARRAYSIZE(text4), ImGuiInputTextFlags_CharsNoBlank);
 
             ImGui::End();
         }
 
+        // window 3
         {
             ImGui::Begin("window 3");
             ImGui::SetWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
