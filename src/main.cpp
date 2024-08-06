@@ -1,24 +1,38 @@
 #include <SDL3/SDL.h>
 #include "imgui.h"
 #include "imgui_impl_sdl3.h"
-#include "imgui_impl_sdlrenderer3.h"
+// #include "imgui_impl_sdlrenderer3.h"
+#include "imgui_impl_opengl3.h"
+#include <glad/glad.h>
 
 #include<theme.h>
 
 int main() {
-    SDL_Init(SDL_INIT_VIDEO||SDL_INIT_EVENTS);
-    SDL_Window *w = SDL_CreateWindow("window", 800, 500, SDL_WINDOW_RESIZABLE);
-    SDL_Renderer *r = SDL_CreateRenderer(w, 0);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
+    SDL_Window *w = SDL_CreateWindow("window", 800, 500, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
+    // SDL_Renderer *r = SDL_CreateRenderer(w, 0);
+    SDL_GLContext gl = SDL_GL_CreateContext(w);
+    SDL_GL_MakeCurrent(w, gl);
+
+    gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress);
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO(); (void) io;
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // enable docking
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // enable multi-viewports
 
-    ImGui_ImplSDL3_InitForSDLRenderer(w, r);
-    ImGui_ImplSDLRenderer3_Init(r);
+    ImGui::StyleColorsDarkRuda();
 
-    ImGui::StyleColorsClassic();
+    const char *glsl_ver = "#version 330";
+    // ImGui_ImplSDL3_InitForSDLRenderer(w, r);
+    // ImGui_ImplSDLRenderer3_Init(r);
+    ImGui_ImplSDL3_InitForOpenGL(w, gl);
+    ImGui_ImplOpenGL3_Init(glsl_ver);
 
     SDL_Event e;
     while(1) {
@@ -31,11 +45,13 @@ int main() {
         }
 
         ImGui_ImplSDL3_NewFrame();
-        ImGui_ImplSDLRenderer3_NewFrame();
+        // ImGui_ImplSDLRenderer3_NewFrame();
+        ImGui_ImplOpenGL3_NewFrame();
         ImGui::NewFrame();
 
         ImGuiID dockspace_id = ImGui::GetID("My dockspace");
         ImGui::DockSpaceOverViewport(dockspace_id);
+        // TODO: make background color alpha 0
         
         static float rgb[] = {1, 1, 1};
         // window 1
@@ -50,7 +66,7 @@ int main() {
             }
             
             if (ImGui::TreeNode("Imgui style")) {
-                static int current_item = 0;
+                static int current_item = 4;
                 const char *const items[] = {"classic", "dark", "light", "Moonlight", "Dark ruda"};
                 ImGui::ListBox("", &current_item, items, IM_ARRAYSIZE(items));
                 if (current_item == 0) {
@@ -117,20 +133,38 @@ int main() {
             ImGui::InputTextMultiline("label", text, IM_ARRAYSIZE(text), ImVec2(-FLT_MIN, -FLT_MIN));
             ImGui::End();
         }
-        
+
         ImGui::Render();
-        SDL_RenderClear(r);
-        SDL_SetRenderDrawColorFloat(r, rgb[0], rgb[1], rgb[2], 0);
-        ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), r);
-        SDL_RenderPresent(r);
+        glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
+        // SDL_RenderClear(r);
+        // SDL_SetRenderDrawColorFloat(r, rgb[0], rgb[1], rgb[2], 0);
+        glClearColor(rgb[0], rgb[1], rgb[2], 0.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        // ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), r);
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+            SDL_Window *backup_window = SDL_GL_GetCurrentWindow();
+            SDL_GLContext backup_context = SDL_GL_GetCurrentContext();
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
+            SDL_GL_MakeCurrent(backup_window, backup_context);
+        }
+
+        // SDL_RenderPresent(r);
+        SDL_GL_SwapWindow(w);
     }
 
     ImGui_ImplSDL3_Shutdown();
-    ImGui_ImplSDLRenderer3_Shutdown();
+    // ImGui_ImplSDLRenderer3_Shutdown();
+    ImGui_ImplOpenGL3_Shutdown();
+
     ImGui::DestroyContext();
 
     SDL_DestroyWindow(w);
-    SDL_DestroyRenderer(r);
+    // SDL_DestroyRenderer(r);
+    SDL_GL_DestroyContext(gl);
     SDL_Quit();
 
     return 0;

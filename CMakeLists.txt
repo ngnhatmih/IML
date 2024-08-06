@@ -7,15 +7,18 @@ set(SOURCE_FILES
     src/theme.cpp
 ) 
 
-include_directories(include)
+set(GLAD_DIR ${PROJECT_SOURCE_DIR}/vendor/glad)
+set(IMGUI_DIR ${PROJECT_SOURCE_DIR}/vendor/imgui)
+
+include_directories(${PROJECT_SOURCE_DIR}/include)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-
-set(IMGUI_SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/imgui)
 
 add_subdirectory(vendor/sdl)
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3)
 
-add_subdirectory(${IMGUI_SOURCE_DIR})
+add_subdirectory(${IMGUI_DIR})
 target_link_libraries(${PROJECT_NAME} PRIVATE imgui::imgui)
 
+add_subdirectory(${GLAD_DIR})
+target_link_libraries(${PROJECT_NAME} PRIVATE glad::glad)
