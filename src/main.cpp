@@ -21,6 +21,7 @@ int main() {
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
+
     SDL_Window *w = SDL_CreateWindow("window", 800, 500, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
     #ifdef SDL_PLATFORM_WIN32
     
@@ -49,7 +50,7 @@ int main() {
 
     io.BackendFlags |= ImGuiBackendFlags_HasMouseHoveredViewport;
 
-    ImGui::StyleColorsDarkRuda();
+    ImGui::StyleColorsDarkRed();
 
     const char *glsl_ver = "#version 330";
     // ImGui_ImplSDL3_InitForSDLRenderer(w, r);
@@ -88,8 +89,8 @@ int main() {
             }
             
             if (ImGui::TreeNode("Imgui style")) {
-                static int current_item = 4;
-                const char *const items[] = {"classic", "dark", "light", "Moonlight", "Dark ruda"};
+                static int current_item = 6;
+                const char *const items[] = {"classic", "dark", "light", "Moonlight", "Dark ruda", "DarkDiscord", "DarkRed"};
                 ImGui::ListBox("", &current_item, items, IM_ARRAYSIZE(items));
                 if (current_item == 0) {
                     ImGui::StyleColorsClassic();        
@@ -101,6 +102,10 @@ int main() {
                     ImGui::StyleColorsMoonlight();
                 } else if (current_item == 4) {
                     ImGui::StyleColorsDarkRuda();
+                } else if (current_item == 5) {
+                    ImGui::StyleColorsDiscordDark();
+                } else if (current_item == 6) {
+                    ImGui::StyleColorsDarkRed();
                 }
                 ImGui::TreePop();
             } 
