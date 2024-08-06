@@ -22,3 +22,5 @@ target_link_libraries(${PROJECT_NAME} PRIVATE imgui::imgui)
 
 add_subdirectory(${GLAD_DIR})
 target_link_libraries(${PROJECT_NAME} PRIVATE glad::glad)
+
+target_link_libraries(IML PRIVATE dwmapi)

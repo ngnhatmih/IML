@@ -1,19 +1,40 @@
 #include <SDL3/SDL.h>
 #include "imgui.h"
 #include "imgui_impl_sdl3.h"
-// #include "imgui_impl_sdlrenderer3.h"
 #include "imgui_impl_opengl3.h"
+// #include "imgui_impl_sdlrenderer3.h"
 #include <glad/glad.h>
+#ifdef SDL_PLATFORM_WIN32
+    #include "dwmapi.h"
+#endif
 
-#include<theme.h>
+#include "theme.h"
 
 int main() {
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
-    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
     SDL_Window *w = SDL_CreateWindow("window", 800, 500, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
+    #ifdef SDL_PLATFORM_WIN32
+    
+    HWND handle = (HWND) SDL_GetPointerProperty(SDL_GetWindowProperties(w), SDL_PROP_WINDOW_WIN32_HWND_POINTER, nullptr);
+    BOOL MODE = 1;
+    
+    if (!DwmSetWindowAttribute(handle, DWMWA_USE_IMMERSIVE_DARK_MODE, &MODE, 4)) {
+        SDL_Log("SET DARK TITLE BAR SUCCESSFULLY");
+    } else {
+        SDL_Log("FAILED TO SET DARK TITLE BAR");
+    }
+
+    #endif
+
     // SDL_Renderer *r = SDL_CreateRenderer(w, 0);
     SDL_GLContext gl = SDL_GL_CreateContext(w);
     SDL_GL_MakeCurrent(w, gl);
@@ -23,8 +44,10 @@ int main() {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO(); (void) io;
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // enable docking
+    //io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // enable docking
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // enable multi-viewports
+
+    io.BackendFlags |= ImGuiBackendFlags_HasMouseHoveredViewport;
 
     ImGui::StyleColorsDarkRuda();
 
@@ -36,9 +59,8 @@ int main() {
 
     SDL_Event e;
     while(1) {
-        ImGui_ImplSDL3_ProcessEvent(&e);
-
         if (SDL_PollEvent(&e)) {
+            ImGui_ImplSDL3_ProcessEvent(&e);
             if (e.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED) {
                 break;
             }
@@ -49,8 +71,8 @@ int main() {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui::NewFrame();
 
-        ImGuiID dockspace_id = ImGui::GetID("My dockspace");
-        ImGui::DockSpaceOverViewport(dockspace_id);
+        // ImGuiID dockspace_id = ImGui::GetID("My dockspace");
+        // ImGui::DockSpaceOverViewport(dockspace_id);
         // TODO: make background color alpha 0
         
         static float rgb[] = {1, 1, 1};
@@ -102,6 +124,8 @@ int main() {
                 ImGuiViewport *viewport = ImGui::GetMainViewport();
                 ImGui::Text("Viewport position: (%.2f, %.2f)", viewport->Pos.x, viewport->Pos.y);
                 ImGui::Text("Viewport position: (%.2f, %.2f)", viewport->GetCenter().x, viewport->GetCenter().y);
+
+                ImGui::Text("MouseHoveredViewport: 0x%08X", io.MouseHoveredViewport);
                 ImGui::TreePop();
             }
 
