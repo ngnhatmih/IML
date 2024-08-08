@@ -5,12 +5,16 @@ project(IML)
 set(SOURCE_FILES 
     src/main.cpp
     src/theme.cpp
+    src/game.cpp
 ) 
 
 set(GLAD_DIR ${PROJECT_SOURCE_DIR}/vendor/glad)
 set(IMGUI_DIR ${PROJECT_SOURCE_DIR}/vendor/imgui)
 
-include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(
+    ${PROJECT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR/vendor/glm}
+)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
@@ -27,3 +31,5 @@ target_link_libraries(${PROJECT_NAME} PRIVATE imgui::imgui)
 add_subdirectory(${GLAD_DIR})
 target_link_libraries(${PROJECT_NAME} PRIVATE glad::glad)
 
+add_subdirectory(vendor/glm)
+target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
