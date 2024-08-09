@@ -131,6 +131,14 @@ void Game::render() {
         ImGui::End();
     }
 
+    vertices[0] = vertex_1[0]; vertices[1] = vertex_1[1]; vertices[2] = vertex_1[2];
+    vertices[3] = vertex_2[0]; vertices[4] = vertex_2[1]; vertices[5] = vertex_2[2];
+    vertices[6] = vertex_3[0]; vertices[7] = vertex_3[1]; vertices[8] = vertex_3[2];
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
     ImGui::Render();
 
     glViewport(0, 0, ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
@@ -156,10 +164,13 @@ void Game::render() {
 void Game::processData() {
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
+    SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "GENERATE VAO ID = %u: SUCCESS", VAO);
 
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "GENERATE VBO ID = %u: SUCCESS", VAO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
