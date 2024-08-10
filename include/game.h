@@ -50,15 +50,21 @@ private:
     SDL_Window *w = nullptr;
     SDL_GLContext gl_context = nullptr;
     bool running = true;
-    unsigned int VBO;
-    unsigned int VAO;
-    unsigned int vertexShader;
-    unsigned int fragmentShader;
-    unsigned int shaderProgram;
+    GLuint VBO[2];
+    GLuint VAO;
+    GLuint vertexShader;
+    GLuint fragmentShader;
+    GLuint shaderProgram;
     float vertices[9] = {
         -0.5f, -0.5f, 0.f, 
         0.5f, -0.5f, 0.f,
         0.f, 0.5f, 0.f,
+    };
+
+    float colors[9] = {
+        1.f, 0.f, 0.f,
+        0.f, 1.f, 0.f,
+        0.f, 0.f, 1.f
     };
 };
 

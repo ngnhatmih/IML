@@ -2,7 +2,7 @@
 
 void Game::clean() {
     glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(2, VBO);
     glDeleteProgram(shaderProgram);
 
     if (gl_context && w) {
@@ -124,9 +124,9 @@ void Game::render() {
         ImGui::Begin("HELLO");
         ImGui::ColorEdit3("BG COLOR", rgb);
         
-        ImGui::DragFloat3("Vertex 1", vertex_1, 0.1f, -1.f, 1.f, "%.2f");
-        ImGui::DragFloat3("Vertex 2", vertex_2, 0.1f, -1.f, 1.f, "%.2f");
-        ImGui::DragFloat3("Vertex 3", vertex_3, 0.1f, -1.f, 1.f, "%.2f");
+        ImGui::DragFloat3("Vertex 1", vertex_1, 0.1f, -10.f, 10.f, "%.2f");
+        ImGui::DragFloat3("Vertex 2", vertex_2, 0.1f, -10.f, 10.f, "%.2f");
+        ImGui::DragFloat3("Vertex 3", vertex_3, 0.1f, -10.f, 10.f, "%.2f");
 
         ImGui::End();
     }
@@ -135,7 +135,7 @@ void Game::render() {
     vertices[3] = vertex_2[0]; vertices[4] = vertex_2[1]; vertices[5] = vertex_2[2];
     vertices[6] = vertex_3[0]; vertices[7] = vertex_3[1]; vertices[8] = vertex_3[2];
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -145,7 +145,6 @@ void Game::render() {
     glClearColor(rgb[0], rgb[1], rgb[2], 0.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-    glUseProgram(shaderProgram);
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 3);
     
@@ -166,14 +165,20 @@ void Game::processData() {
     glBindVertexArray(VAO);
     SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "GENERATE VAO ID = %u: SUCCESS", VAO);
 
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "GENERATE VBO ID = %u: SUCCESS", VAO);
+    glGenBuffers(2, VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+    SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "GENERATE VBO ID = %u: SUCCESS", VBO[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
+    SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "GENERATE VBO ID = %u: SUCCESS", VBO[1]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -183,18 +188,21 @@ void Game::compileShaders() {
     // Vertex Shader
     const char *vertexShaderSource = "#version 330 core\n"
         "layout (location = 0) in vec3 Pos;\n"
+        "layout (location = 1) in vec3 in_Color;\n"
+        "out vec3 _Color;\n"
         "void main() {\n"
         "   gl_Position = vec4(Pos.x, Pos.y, Pos.z, 1.0);\n"
+        "   _Color = in_Color; \n"
         "}\0";
 
     // Fragment Shader
     const char *fragmentShaderSource = "#version 330 core \n"
+        "in vec3 _Color;"
         "out vec4 Color; \n"
         "void main() { \n"
-        "   Color = vec4(1.0, 0.0, 1.0, 1.0); \n"
+        "    Color= vec4(_Color, 1.0); \n"
         "}\0";
 
-    unsigned int vertexShader;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
     glCompileShader(vertexShader);
@@ -227,9 +235,6 @@ void Game::linkShaders() {
     glAttachShader(shaderProgram, fragmentShader);
     glLinkProgram(shaderProgram);
 
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
@@ -238,6 +243,8 @@ void Game::linkShaders() {
 
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
+
+    glUseProgram(shaderProgram);
 }
 
 bool Game::getRunningState() {
