@@ -163,18 +163,15 @@ void Game::render() {
 void Game::processData() {
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
-    SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "GENERATE VAO ID = %u: SUCCESS", VAO);
 
     glGenBuffers(2, VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-    SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "GENERATE VBO ID = %u: SUCCESS", VBO[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, 0, 0);
     glEnableVertexAttribArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
-    SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "GENERATE VBO ID = %u: SUCCESS", VBO[1]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
 
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -185,61 +182,39 @@ void Game::processData() {
 }
 
 void Game::compileShaders() {
-    // Vertex Shader
+    // vertex shader
     const char *vertexShaderSource = "#version 330 core\n"
         "layout (location = 0) in vec3 Pos;\n"
         "layout (location = 1) in vec3 in_Color;\n"
         "out vec3 _Color;\n"
         "void main() {\n"
-        "   gl_Position = vec4(Pos.x, Pos.y, Pos.z, 1.0);\n"
-        "   _Color = in_Color; \n"
+        "   gl_Position = vec4(Pos, 1.0);\n"
+        "   _Color = in_Color;\n"
         "}\0";
 
-    // Fragment Shader
-    const char *fragmentShaderSource = "#version 330 core \n"
-        "in vec3 _Color;"
-        "out vec4 Color; \n"
-        "void main() { \n"
-        "    Color= vec4(_Color, 1.0); \n"
+    // fragment shader
+    const char *fragmentShaderSource = "#version 330 core\n"
+        "in vec3 _Color;\n"
+        "out vec4 Color;\n"
+        "void main() {\n"
+        "   Color = vec4(_Color, 1.0);\n"
         "}\0";
 
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-
-    int success;
-    char infoLog[512];
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-
-    if (!success) {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        SDL_Log("ERROR::SHADER::VERTEX::COMPILATION_FAILED: %s", infoLog);
-    }
-
     fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
 
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        SDL_Log("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED: %s", infoLog);
-    }  
+    glShaderSource(vertexShader, 1, &vertexShaderSource, 0);
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, 0);
+
+    glCompileShader(vertexShader);
+    glCompileShader(fragmentShader);
 }
 
 void Game::linkShaders() {
-    int success;
-    char infoLog[512];
     shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
     glAttachShader(shaderProgram, fragmentShader);
+    glAttachShader(shaderProgram, vertexShader);
     glLinkProgram(shaderProgram);
-
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        SDL_Log("ERROR::SHADER::LINK_FAILED: %s", infoLog);
-    }
 
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
