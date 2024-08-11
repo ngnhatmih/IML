@@ -116,6 +116,7 @@ void Game::render() {
     ImGui::NewFrame();
 
     static float rgb[3] = {1.f, 1.f, 1.f};
+    static float alpha = 0;
     static int current = 1;
     const char *modes[2] = {"LINE", "FILL"};
     {
@@ -128,6 +129,8 @@ void Game::render() {
         } else {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
+
+        ImGui::DragFloat("alpha", &alpha, 0.01f, 0.f, glm::pi<float>());
         ImGui::End();
     }
 
@@ -136,6 +139,10 @@ void Game::render() {
     glViewport(0, 0, ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
     glClearColor(rgb[0], rgb[1], rgb[2], 0.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+    glUseProgram(shaderProgram);
+    int uniform_location = glGetUniformLocation(shaderProgram, "alpha");
+    glUniform1f(uniform_location, alpha);
 
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -184,8 +191,12 @@ void Game::compileShaders() {
         "layout (location = 0) in vec3 Pos;\n"
         "layout (location = 1) in vec3 in_Color;\n"
         "out vec3 _Color;\n"
+        "uniform float alpha;\n"
         "void main() {\n"
-        "   gl_Position = vec4(Pos, 1.0);\n"
+        "   float len = sqrt( Pos.x * Pos.x + Pos.y * Pos.y ); \n"
+        "   float angle = 3.141592 - atan(Pos.y, Pos.x) - alpha; \n"
+        "   vec2 transform_pos = len * vec2(cos(angle), sin(angle)); \n"
+        "   gl_Position = vec4(transform_pos, Pos.z , 1.0);\n"
         "   _Color = in_Color;\n"
         "}\0";
 
@@ -205,6 +216,20 @@ void Game::compileShaders() {
 
     glCompileShader(vertexShader);
     glCompileShader(fragmentShader);
+
+    int success;
+    char infoLog[512];
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(vertexShader, 512, 0, infoLog);
+        SDL_Log("ERROR::SHADER::VERTEX::COMPILE_FAILED: %s", infoLog);
+    }
+
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(fragmentShader, 512, 0, infoLog);
+        SDL_Log("ERROR::SHADER::FRAGMENT::COMPILE_FAILED: %s", infoLog);
+    }
 }
 
 void Game::linkShaders() {
@@ -215,8 +240,6 @@ void Game::linkShaders() {
 
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
-
-    glUseProgram(shaderProgram);
 }
 
 bool Game::getRunningState() {
