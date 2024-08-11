@@ -116,28 +116,20 @@ void Game::render() {
     ImGui::NewFrame();
 
     static float rgb[3] = {1.f, 1.f, 1.f};
-    static float vertex_1[3] = {-0.5f, -0.5f, 0.0f};
-    static float vertex_2[3] = {0.5f, -0.5f, 0.0f};
-    static float vertex_3[3] = {0.0f, 0.5f, 0.0f};
+    static int current = 1;
+    const char *modes[2] = {"LINE", "FILL"};
     {
         ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
         ImGui::Begin("HELLO");
         ImGui::ColorEdit3("BG COLOR", rgb);
-        
-        ImGui::DragFloat3("Vertex 1", vertex_1, 0.1f, -10.f, 10.f, "%.2f");
-        ImGui::DragFloat3("Vertex 2", vertex_2, 0.1f, -10.f, 10.f, "%.2f");
-        ImGui::DragFloat3("Vertex 3", vertex_3, 0.1f, -10.f, 10.f, "%.2f");
-
+        ImGui::ListBox("MODE", &current, modes, IM_ARRAYSIZE(modes));
+        if (current == 0) {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        } else {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
         ImGui::End();
     }
-
-    vertices[0] = vertex_1[0]; vertices[1] = vertex_1[1]; vertices[2] = vertex_1[2];
-    vertices[3] = vertex_2[0]; vertices[4] = vertex_2[1]; vertices[5] = vertex_2[2];
-    vertices[6] = vertex_3[0]; vertices[7] = vertex_3[1]; vertices[8] = vertex_3[2];
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     ImGui::Render();
 
@@ -146,7 +138,8 @@ void Game::render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     glBindVertexArray(VAO);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
     
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     
@@ -176,6 +169,10 @@ void Game::processData() {
 
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(1);
+
+    glGenBuffers(1, &EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);

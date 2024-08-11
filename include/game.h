@@ -50,21 +50,29 @@ private:
     SDL_Window *w = nullptr;
     SDL_GLContext gl_context = nullptr;
     bool running = true;
+    GLuint EBO;
     GLuint VBO[2];
     GLuint VAO;
     GLuint vertexShader;
     GLuint fragmentShader;
     GLuint shaderProgram;
-    float vertices[9] = {
-        -0.5f, -0.5f, 0.f, 
+    float vertices[12] = {
+        -0.5f, 0.5f, 0.f,
+        0.5f, 0.5f, 0.f,
         0.5f, -0.5f, 0.f,
-        0.f, 0.5f, 0.f,
+        -0.5f, -0.5f, 0.f 
     };
 
-    float colors[9] = {
+    float colors[12] = {
         1.f, 0.f, 0.f,
         0.f, 1.f, 0.f,
-        0.f, 0.f, 1.f
+        0.f, 0.f, 1.f,
+        1.f, 0.f, 1.f,
+    };
+
+    GLuint indices[6] = {
+        0, 1, 2,
+        0, 2, 3,
     };
 };
 
