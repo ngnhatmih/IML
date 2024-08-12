@@ -6,7 +6,8 @@ set(SOURCE_FILES
     src/main.cpp
     src/theme.cpp
     src/game.cpp
-) 
+    src/shader.cpp
+)
 
 set(GLAD_DIR ${PROJECT_SOURCE_DIR}/vendor/glad)
 set(IMGUI_DIR ${PROJECT_SOURCE_DIR}/vendor/imgui)
@@ -17,6 +18,12 @@ include_directories(
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+
+add_custom_command(
+    TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_SOURCE_DIR}/shaders ${CMAKE_BINARY_DIR}/shaders
+    COMMENT "Copied shaders folder"
+)
 
 if(WIN32) 
     target_link_libraries(IML PRIVATE dwmapi)

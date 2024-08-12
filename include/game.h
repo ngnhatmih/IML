@@ -17,11 +17,14 @@ const SDL_WindowFlags WINDOW_FLAGS = SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #define GLSL_VERSION "#version 330"
+#include "shader.h"
 
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_sdl3.h"
 #include "theme.h"
+
+
 
 class Game {
 public:
@@ -38,8 +41,6 @@ public:
     void render();
     void clean();
     void processData();
-    void compileShaders();
-    void linkShaders();
 
     SDL_Window *getWindow();
     SDL_GLContext getGLContext();
@@ -53,9 +54,7 @@ private:
     GLuint EBO;
     GLuint VBO[2];
     GLuint VAO;
-    GLuint vertexShader;
-    GLuint fragmentShader;
-    GLuint shaderProgram;
+    Shader *shader;
     float vertices[12] = {
         -0.5f, 0.5f, 0.f,
         0.5f, 0.5f, 0.f,
