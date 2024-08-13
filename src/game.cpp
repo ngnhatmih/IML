@@ -122,6 +122,8 @@ void Game::render() {
     static float alpha = 0;
     static bool upside_down = false;
     static int current = 1;
+    static float x_offset = 0.f;
+    static float y_offset = 0.f;
     const char *modes[2] = {"LINE", "FILL"};
     {
         ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
@@ -144,6 +146,8 @@ void Game::render() {
         if (ImGui::Button(upside_down ? "ON" : "OFF", buttonSize)) {
             upside_down = !upside_down;
         }
+        ImGui::DragFloat("x_offset", &x_offset, 0.01f, -10.f, 10.f);
+        ImGui::DragFloat("y_offset", &y_offset, 0.01f, -10.f, 10.f);
   
         ImGui::End();
     }
@@ -157,6 +161,8 @@ void Game::render() {
     shader->useProgram();
     shader->setUniform("alpha", alpha);
     shader->setUniform("upside_down", upside_down);
+    shader->setUniform("x_offset", x_offset);
+    shader->setUniform("y_offset", y_offset);
 
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
