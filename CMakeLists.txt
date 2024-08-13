@@ -22,7 +22,6 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 set(SHADERS_SRC ${CMAKE_SOURCE_DIR}/shaders)
 set(SHADERS_DES ${CMAKE_BINARY_DIR}/shaders)
 add_subdirectory(shaders)
-add_dependencies(${PROJECT_NAME} shaders)
 
 if(WIN32) 
     target_link_libraries(IML PRIVATE dwmapi)
