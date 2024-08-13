@@ -120,10 +120,12 @@ void Game::render() {
 
     static float rgb[3] = {1.f, 1.f, 1.f};
     static float alpha = 0;
+    alpha = glm::pi<float>() * glm::sin(SDL_GetTicks()/1000.f);
     static bool upside_down = false;
     static int current = 1;
     static float x_offset = 0.f;
     static float y_offset = 0.f;
+    static int shape = 0;
     const char *modes[2] = {"LINE", "FILL"};
     {
         ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
@@ -138,17 +140,27 @@ void Game::render() {
 
         ImGui::DragFloat("alpha", &alpha, 0.01f, 0.f, glm::pi<float>());
 
-        ImGui::Text("UPSIDE DOWN: "); 
-        ImGui::SameLine();
         float padding = 4.f;
         ImVec2 textSize = ImGui::CalcTextSize("OFF");
         ImVec2 buttonSize(textSize.x + padding * 2, textSize.y + padding * 2);
+        ImGui::Text("UPSIDE DOWN: "); ImGui::SameLine();
         if (ImGui::Button(upside_down ? "ON" : "OFF", buttonSize)) {
             upside_down = !upside_down;
         }
         ImGui::DragFloat("x_offset", &x_offset, 0.01f, -10.f, 10.f);
         ImGui::DragFloat("y_offset", &y_offset, 0.01f, -10.f, 10.f);
-  
+
+        if (ImGui::RadioButton("RECTANGLE", &shape, 0)) {
+            x_offset = y_offset = 0;
+        }; 
+        ImGui::SameLine();
+        
+        if (ImGui::RadioButton("TRIANGLE", &shape, 1)) {
+            x_offset = y_offset = 0;
+        } 
+        ImGui::SameLine();
+
+        ImGui::RadioButton("CIRCLE", &shape, 2);
         ImGui::End();
     }
 
@@ -165,7 +177,12 @@ void Game::render() {
     shader->setUniform("y_offset", y_offset);
 
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    if (shape == 0) {
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    } else if (shape == 1) {
+        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void *)(6 * sizeof(GLuint)));
+    }
+    
     glBindVertexArray(0);
     
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

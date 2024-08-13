@@ -55,18 +55,27 @@ private:
     GLuint VBO;
     GLuint VAO;
     Shader *shader;
-    float vertices[24] = {
+    float vertices[100] = {
         // POS              // COLOR
         -0.5f, 0.5f, 0.f,   1.f, 0.f, 0.f,
         0.5f, 0.5f, 0.f,    0.f, 1.f, 0.f,
         0.5f, -0.5f, 0.f,   0.f, 0.f, 1.f,
         -0.5f, -0.5f, 0.f,  1.f, 0.f, 1.f,
+
+        -0.5f, -0.5f, 0.f,   1.f, 0.f, 0.f,
+        0.f, 0.5f, 0.f,      0.f, 1.f, 0.f,
+        0.5f, -0.5f, 0.f,      0.f, 0.f, 1.f,
     };
 
-    GLuint indices[6] = {
+    GLuint indices[9] = {
+        // RECTANGLE
         0, 2, 4,
-        0, 4, 6
+        0, 4, 6,
+
+        // TRIANGLE
+        8, 10, 12,
     };
+
 };
 
 #endif /* GAME_H */
