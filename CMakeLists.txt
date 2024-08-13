@@ -11,6 +11,7 @@ set(SOURCE_FILES
 
 set(GLAD_DIR ${PROJECT_SOURCE_DIR}/vendor/glad)
 set(IMGUI_DIR ${PROJECT_SOURCE_DIR}/vendor/imgui)
+set(STB_DIR ${PROJECT_SOURCE_DIR}/vendor/stb)
 
 include_directories(
     ${PROJECT_SOURCE_DIR}/include
@@ -38,3 +39,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE glad::glad)
 
 add_subdirectory(vendor/glm)
 target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
+
+add_subdirectory(vendor/stb)
+target_link_libraries(${PROJECT_NAME} PRIVATE stb::stb)

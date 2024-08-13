@@ -19,5 +19,5 @@ void main() {
         gl_Position = vec4(transform_pos.x + x_offset, -transform_pos.y + y_offset, Pos.z , 1.0);
     }
     
-    _Color = gl_Position.xyz;
+    _Color = vec3(gl_Position.xy, 0.5);
 }
