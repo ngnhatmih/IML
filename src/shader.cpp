@@ -59,7 +59,18 @@ void Shader::deleteProgram() {
         glDeleteProgram(shaderProgram);
 }
 
+
+void Shader::setUniform(const char *name, int value) {
+    int uniform_location = glGetUniformLocation(shaderProgram, name);
+    glUniform1i(uniform_location, value);
+}
+
 void Shader::setUniform(const char *name, float value) {
     int uniform_location = glGetUniformLocation(shaderProgram, name);
     glUniform1f(uniform_location, value);
 }
+
+void Shader::setUniform(const char *name, bool value) {
+    setUniform(name, (int) value);
+}
+

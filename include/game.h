@@ -69,9 +69,8 @@ private:
         1.f, 0.f, 1.f,
     };
 
-    GLuint indices[6] = {
+    GLuint indices[3] = {
         0, 1, 2,
-        0, 2, 3,
     };
 };
 
