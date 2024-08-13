@@ -52,26 +52,20 @@ private:
     SDL_GLContext gl_context = nullptr;
     bool running = true;
     GLuint EBO;
-    GLuint VBO[2];
+    GLuint VBO;
     GLuint VAO;
     Shader *shader;
-    float vertices[12] = {
-        -0.5f, 0.5f, 0.f,
-        0.5f, 0.5f, 0.f,
-        0.5f, -0.5f, 0.f,
-        -0.5f, -0.5f, 0.f 
-    };
-
-    float colors[12] = {
-        1.f, 0.f, 0.f,
-        0.f, 1.f, 0.f,
-        0.f, 0.f, 1.f,
-        1.f, 0.f, 1.f,
+    float vertices[24] = {
+        // POS              // COLOR
+        -0.5f, 0.5f, 0.f,   1.f, 0.f, 0.f,
+        0.5f, 0.5f, 0.f,    0.f, 1.f, 0.f,
+        0.5f, -0.5f, 0.f,   0.f, 0.f, 1.f,
+        -0.5f, -0.5f, 0.f,  1.f, 0.f, 1.f,
     };
 
     GLuint indices[6] = {
-        0, 1, 2,
-        0, 2, 3,
+        0, 2, 4,
+        0, 4, 6
     };
 };
 
