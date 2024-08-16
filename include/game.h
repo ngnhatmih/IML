@@ -24,7 +24,7 @@ const SDL_WindowFlags WINDOW_FLAGS = SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL;
 #include "imgui_impl_sdl3.h"
 #include "theme.h"
 
-
+#include "stb_image.h"
 
 class Game {
 public:
@@ -54,28 +54,28 @@ private:
     GLuint EBO;
     GLuint VBO;
     GLuint VAO;
+    GLuint texture_object;
     Shader *shader;
-    float vertices[100] = {
-        // POS              // COLOR
-        -0.5f, 0.5f, 0.f,   1.f, 0.f, 0.f,
-        0.5f, 0.5f, 0.f,    0.f, 1.f, 0.f,
-        0.5f, -0.5f, 0.f,   0.f, 0.f, 1.f,
-        -0.5f, -0.5f, 0.f,  1.f, 0.f, 1.f,
+    float vertices[1000] = {
+        // POS              // COLOR        //TEXTURE COORDINATES
+        -0.5f, 0.5f, 0.f,   1.f, 0.f, 0.f,  0.f, 1.f,
+        0.5f, 0.5f, 0.f,    0.f, 1.f, 0.f,  1.f, 1.f,
+        0.5f, -0.5f, 0.f,   0.f, 0.f, 1.f,  1.f, 0.f,
+        -0.5f, -0.5f, 0.f,  1.f, 0.f, 1.f,  0.f, 0.f,
 
-        -0.5f, -0.5f, 0.f,   1.f, 0.f, 0.f,
-        0.f, 0.5f, 0.f,      0.f, 1.f, 0.f,
-        0.5f, -0.5f, 0.f,      0.f, 0.f, 1.f,
+        -0.5f, -0.5f, 0.f,   1.f, 0.f, 0.f, 0.f, 0.f,
+        0.f, 0.5f, 0.f,      0.f, 1.f, 0.f, 0.5f, 0.5f,
+        0.5f, -0.5f, 0.f,    0.f, 0.f, 1.f, 1.f, 1.f,
     };
 
     GLuint indices[9] = {
         // RECTANGLE
-        0, 2, 4,
-        0, 4, 6,
+        0, 1, 2,
+        0, 2, 3,
 
         // TRIANGLE
-        8, 10, 12,
+        4, 5, 6
     };
-
 };
 
 #endif /* GAME_H */

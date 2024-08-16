@@ -2,7 +2,10 @@
 
 layout (location = 0) in vec3 Pos;
 layout (location = 1) in vec3 in_Color;
+layout (location = 2) in vec2 TexCoord;
+
 out vec3 _Color;
+out vec2 _TexCoord;
 
 uniform float alpha;
 uniform bool upside_down;
@@ -20,4 +23,5 @@ void main() {
     }
     
     _Color = in_Color;
+    _TexCoord = TexCoord;
 }

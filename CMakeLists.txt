@@ -20,9 +20,27 @@ include_directories(
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-set(SHADERS_SRC ${CMAKE_SOURCE_DIR}/shaders)
-set(SHADERS_DES ${CMAKE_BINARY_DIR}/shaders)
-add_subdirectory(shaders)
+set(SHADERS_SRC ${CMAKE_SOURCE_DIR}/res/shaders)
+set(SHADERS_DES ${CMAKE_BINARY_DIR}/res/shaders)
+
+add_custom_target(shaders
+    COMMAND ${CMAKE_COMMAND} -E $<IF:$<VERSION_LESS:${CMAKE_VERSION},3.26.0>,copy_directory,copy_directory_if_different> 
+        ${SHADERS_SRC} 
+        ${SHADERS_DES}
+    COMMENT "Copying ${SHADERS_SRC} to ${SHADERS_DES}"
+    VERBATIM
+)
+
+set(TEXTURE_SOURCE ${CMAKE_SOURCE_DIR}/res/textures)
+set(TEXTURE_DES ${CMAKE_BINARY_DIR}/res/textures)
+
+add_custom_target(textures
+    COMMAND ${CMAKE_COMMAND} -E $<IF:$<VERSION_LESS:${CMAKE_VERSION},3.26.0>,copy_directory,copy_directory_if_different> 
+        ${TEXTURE_SOURCE} 
+        ${TEXTURE_DES}
+    COMMENT "Copying ${TEXTURE_SOURCE} to ${TEXTURE_DES}"
+    VERBATIM
+)
 
 if(WIN32) 
     target_link_libraries(IML PRIVATE dwmapi)

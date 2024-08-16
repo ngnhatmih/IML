@@ -1,3 +1,4 @@
+#define STB_IMAGE_IMPLEMENTATION
 #include "game.h"
 
 void Game::clean() {
@@ -77,7 +78,7 @@ bool Game::init() {
     SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "INITIALIZE GLAD: SUCCESS");
 
     // Load shaders and create shader program
-    shader = new Shader("shaders/vert.glsl", "shaders/frag.glsl");
+    shader = new Shader("res/shaders/vert.glsl", "res/shaders/frag.glsl");
 
     // Check version and create Imgui context
     IMGUI_CHECKVERSION();
@@ -126,7 +127,7 @@ void Game::render() {
     static float x_offset = 0.f;
     static float y_offset = 0.f;
     static int shape = 0;
-    const char *modes[2] = {"LINE", "FILL"};
+    const char *modes[3] = {"LINE", "FILL", "POINT"};
     {
         ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
         ImGui::Begin("HELLO");
@@ -134,8 +135,10 @@ void Game::render() {
         ImGui::ListBox("MODE", &current, modes, IM_ARRAYSIZE(modes));
         if (current == 0) {
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        } else {
+        } else if (current == 1) {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        } else {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
         }
 
         ImGui::DragFloat("alpha", &alpha, 0.01f, 0.f, glm::pi<float>());
@@ -176,6 +179,7 @@ void Game::render() {
     shader->setUniform("x_offset", x_offset);
     shader->setUniform("y_offset", y_offset);
 
+    glBindTexture(GL_TEXTURE_2D, texture_object);
     glBindVertexArray(VAO);
     if (shape == 0) {
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -205,11 +209,14 @@ void Game::processData() {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, 3 * sizeof(float), 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), 0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT,GL_FALSE, 3 * sizeof(float), (void *) (3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     glGenBuffers(1, &EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
@@ -217,6 +224,30 @@ void Game::processData() {
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+
+    // load texture
+    int w, h, channels;
+    unsigned char *data = stbi_load("res/textures/brick001.jpg", &w, &h, &channels, 0);
+
+    glGenTextures(1, &texture_object);
+    glBindTexture(GL_TEXTURE_2D, texture_object); // 2d texture/ image texture
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    stbi_image_free(data);
+
+    // wrapping
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+    float border_color[] = {1.0f, 0.f, 1.f, 1.f};
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, border_color);
+
+    // filtering
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 bool Game::getRunningState() {
