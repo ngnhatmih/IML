@@ -1,5 +1,5 @@
 #define STB_IMAGE_IMPLEMENTATION
-#include "game.h"
+#include "game.h" 
 
 void Game::clean() {
     glDeleteVertexArrays(1, &VAO);
