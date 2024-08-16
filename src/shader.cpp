@@ -25,28 +25,49 @@ Shader::Shader(const char *vertex_path, const char *fragment_path) {
             line = buf;
             fSource += line + "\n";
 
-            const char *vertexShaderSource = vSource.c_str(); 
-            const char *fragmentShaderSource = fSource.c_str();
-
-            vertexShader = glCreateShader(GL_VERTEX_SHADER);
-            fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-            glShaderSource(vertexShader, 1, &vertexShaderSource, 0);
-            glShaderSource(fragmentShader, 1, &fragmentShaderSource, 0);
-
-            glCompileShader(vertexShader);
-            glCompileShader(fragmentShader);
-
-            shaderProgram = glCreateProgram();
-            glAttachShader(shaderProgram, vertexShader);
-            glAttachShader(shaderProgram, fragmentShader);
-            glLinkProgram(shaderProgram);
         }
 
         fFile.close();
+
+        const char *vertexShaderSource = vSource.c_str(); 
+        const char *fragmentShaderSource = fSource.c_str();
+
+        vertexShader = glCreateShader(GL_VERTEX_SHADER);
+        fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+
+        glShaderSource(vertexShader, 1, &vertexShaderSource, 0);
+        glShaderSource(fragmentShader, 1, &fragmentShaderSource, 0);
+
+        int success;
+        char infoLog[512] = "";
+
+        glCompileShader(vertexShader);
+        glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+        if (!success) {
+            glGetShaderInfoLog(vertexShader, 512, 0, infoLog);
+            SDL_Log("ERROR:VERTEX::COMPILE: %s", infoLog);
+        }
+
+        glCompileShader(fragmentShader);
+        glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+        if (!success) {
+            glGetShaderInfoLog(fragmentShader, 512, 0, infoLog);
+            SDL_Log("ERROR:FRAGMENT::COMPILE: %s", infoLog);
+        }
+
+        shaderProgram = glCreateProgram();
+        glAttachShader(shaderProgram, vertexShader);
+        glAttachShader(shaderProgram, fragmentShader);
+        glLinkProgram(shaderProgram);
+
+        
     } else {
         SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "ERROR:LOAD_SHADER");
     }
+}
+
+GLuint Shader::getProgramID() {
+    return shaderProgram;
 }
 
 void Shader::useProgram() {

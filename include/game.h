@@ -54,7 +54,8 @@ private:
     GLuint EBO;
     GLuint VBO;
     GLuint VAO;
-    GLuint texture_object;
+    GLuint texture1;
+    GLuint texture2;
     Shader *shader;
     float vertices[1000] = {
         // POS              // COLOR        //TEXTURE COORDINATES

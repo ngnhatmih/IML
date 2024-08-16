@@ -24,6 +24,7 @@ public:
     void setUniform(const char *name, glm::mat3 value, bool Transpose = false);
     void setUniform(const char *name, glm::mat4 value, bool Transpose = false);
 
+    GLuint getProgramID();
     void useProgram();
     void deleteProgram();
 

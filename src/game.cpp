@@ -124,10 +124,12 @@ void Game::render() {
     alpha = glm::pi<float>() * glm::sin(SDL_GetTicks()/1000.f);
     static bool upside_down = false;
     static int current = 1;
+    static int texture_unit = 0;
     static float x_offset = 0.f;
     static float y_offset = 0.f;
     static int shape = 0;
     const char *modes[3] = {"LINE", "FILL", "POINT"};
+    const char *texture_units[3] = {"texture1", "texture2", "none"};
     {
         ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
         ImGui::Begin("HELLO");
@@ -164,6 +166,8 @@ void Game::render() {
         ImGui::SameLine();
 
         ImGui::RadioButton("CIRCLE", &shape, 2);
+
+        ImGui::ListBox("TEXTURE UNIT", &texture_unit,  texture_units, IM_ARRAYSIZE(texture_units));
         ImGui::End();
     }
 
@@ -172,14 +176,19 @@ void Game::render() {
     glViewport(0, 0, ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
     glClearColor(rgb[0], rgb[1], rgb[2], 0.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texture2);
 
     shader->useProgram();
     shader->setUniform("alpha", alpha);
     shader->setUniform("upside_down", upside_down);
     shader->setUniform("x_offset", x_offset);
     shader->setUniform("y_offset", y_offset);
+    shader->setUniform("texture_unit", texture_unit);
 
-    glBindTexture(GL_TEXTURE_2D, texture_object);
     glBindVertexArray(VAO);
     if (shape == 0) {
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -188,6 +197,7 @@ void Game::render() {
     }
     
     glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
     
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     
@@ -202,10 +212,14 @@ void Game::render() {
 }
 
 void Game::processData() {
+    SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "PROCESSING DATA...");
+
     glGenVertexArrays(1, &VAO);
+    SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "GENERATED VAO = %u", VAO);
     glBindVertexArray(VAO);
 
     glGenBuffers(1, &VBO);
+    SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "GENERATED VBO = %u", VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 
@@ -219,6 +233,7 @@ void Game::processData() {
     glEnableVertexAttribArray(2);
 
     glGenBuffers(1, &EBO);
+    SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "GENERATED EBO = %u", EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
@@ -227,27 +242,65 @@ void Game::processData() {
 
     // load texture
     int w, h, channels;
-    unsigned char *data = stbi_load("res/textures/brick001.jpg", &w, &h, &channels, 0);
+    const char *path = "res/textures/brick001.jpg";
+    unsigned char *data = stbi_load(path, &w, &h, &channels, 0);
+    // if (data) {
+    //     SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "LOADED IMAGE %s: (%d, %d, %d)", path, w, h, channels);
+    // }
 
-    glGenTextures(1, &texture_object);
-    glBindTexture(GL_TEXTURE_2D, texture_object); // 2d texture/ image texture
+    glGenTextures(1, &texture1);
+    SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "GENERATED texture = %u", texture1);
+    glBindTexture(GL_TEXTURE_2D, texture1); // 2d texture/ image texture
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
+    // SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "ADDED IMAGE TO TEXTURE: (%d, %d)", w, h);
 
     stbi_image_free(data);
-
-    // wrapping
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-
-    float border_color[] = {1.0f, 0.f, 1.f, 1.f};
-    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, border_color);
-
-    // filtering
+    
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    path = "res/textures/marble.jpg";
+    data = stbi_load(path, &w, &h, &channels, 4);
+    // if (data) {
+    //     SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "LOADED IMAGE %s: (%d, %d, %d)", path, w, h, channels);
+    // }
+    
+    glGenTextures(1, &texture2);
+    SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "GENERATED texture = %u", texture2);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
+    // SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "ADDED IMAGE TO TEXTURE: (%d, %d)", w, h);
+
+    stbi_image_free(data);
+
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    shader->useProgram();
+    shader->setUniform("_texture1", 0);
+    shader->setUniform("_textur2e2", 1);
+
+    // GLint t1, t2;
+    // glGetUniformiv(shader->getProgramID(), glGetUniformLocation(shader->getProgramID(), "_texture1"), &t1);
+    // glGetUniformiv(shader->getProgramID(), glGetUniformLocation(shader->getProgramID(), "_textur2e2"), &t2);
+
+    // SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "uniform _texture1: %d", t1);
+    // SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "uniform _textur2e2: %d", t2);
+    SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "FINISHED PROCESSING DATA");
 }
 
 bool Game::getRunningState() {
