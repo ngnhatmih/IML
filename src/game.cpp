@@ -125,9 +125,8 @@ void Game::render() {
     static bool upside_down = false;
     static int current = 1;
     static int texture_unit = 0;
-    static float x_offset = 0.f;
-    static float y_offset = 0.f;
-    static float scales[3] = {1.f, 1.f, 1.f};
+    static float scaling[3] = {1.f, 1.f, 1.f};
+    static float translation[3] = {0.f, 0.f, 0.f};
 
     static int shape = 0;
     const char *modes[3] = {"LINE", "FILL", "POINT"};
@@ -136,6 +135,8 @@ void Game::render() {
         ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
         ImGui::Begin("HELLO");
         ImGui::ColorEdit3("BG COLOR", rgb);
+        
+        // polygon mode
         ImGui::ListBox("MODE", &current, modes, IM_ARRAYSIZE(modes));
         if (current == 0) {
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -145,9 +146,16 @@ void Game::render() {
             glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
         }
 
+        // transform
         ImGui::DragFloat("alpha", &alpha, 0.01f, 0.f, glm::pi<float>());
-        ImGui::DragFloat3("scale", scales, 0.1f, 1.f, 5.f);
+        ImGui::DragFloat3("scaling", scaling, 0.1f, 1.f, 5.f);
+        ImGui::DragFloat3("translation", translation, 0.1f, -10.f, 10.f);
+        if (ImGui::Button("RESET")) {
+            scaling[0] = scaling[1] = scaling[2] = 1.f;
+            translation[0] = translation[1] = translation[2] = 0.f;
+        }
 
+        // upsidedown
         float padding = 4.f;
         ImVec2 textSize = ImGui::CalcTextSize("OFF");
         ImVec2 buttonSize(textSize.x + padding * 2, textSize.y + padding * 2);
@@ -155,19 +163,10 @@ void Game::render() {
         if (ImGui::Button(upside_down ? "ON" : "OFF", buttonSize)) {
             upside_down = !upside_down;
         }
-        ImGui::DragFloat("x_offset", &x_offset, 0.01f, -10.f, 10.f);
-        ImGui::DragFloat("y_offset", &y_offset, 0.01f, -10.f, 10.f);
 
-        if (ImGui::RadioButton("RECTANGLE", &shape, 0)) {
-            x_offset = y_offset = 0;
-        }; 
-        ImGui::SameLine();
-        
-        if (ImGui::RadioButton("TRIANGLE", &shape, 1)) {
-            x_offset = y_offset = 0;
-        } 
-        ImGui::SameLine();
-
+        // shape
+        ImGui::RadioButton("RECTANGLE", &shape, 0); ImGui::SameLine();  
+        ImGui::RadioButton("TRIANGLE", &shape, 1); ImGui::SameLine();
         ImGui::RadioButton("CIRCLE", &shape, 2);
 
         ImGui::ListBox("TEXTURE UNIT", &texture_unit,  texture_units, IM_ARRAYSIZE(texture_units));
@@ -188,10 +187,9 @@ void Game::render() {
     shader->useProgram();
     shader->setUniform("alpha", 0);
     shader->setUniform("upside_down", upside_down);
-    shader->setUniform("x_offset", x_offset);
-    shader->setUniform("y_offset", y_offset);
     shader->setUniform("texture_unit", texture_unit);
-    shader->setUniform("scales", glm::vec3(scales[0], scales[1], scales[2]));
+    shader->setUniform("_scaling", glm::vec3(scaling[0], scaling[1], scaling[2]));
+    shader->setUniform("_translation", glm::vec3(translation[0], translation[1], translation[2]));
 
     glBindVertexArray(VAO);
     if (shape == 0) {
