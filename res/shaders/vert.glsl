@@ -11,6 +11,8 @@ uniform float alpha;
 uniform bool upside_down;
 uniform float x_offset;
 uniform float y_offset;
+uniform vec3 scales;
+
 
 void main() {
     float len = sqrt( Pos.x * Pos.x + Pos.y * Pos.y ); 
@@ -21,6 +23,15 @@ void main() {
     } else {
         gl_Position = vec4(transform_pos.x + x_offset, -transform_pos.y + y_offset, Pos.z , 1.0);
     }
+
+    mat4 scale = mat4(
+        scales.x, 0.0      , 0.0      , 0.0,
+        0.0      , scales.y, 0.0      , 0.0,
+        0.0      , 0.0      , scales.z, 0.0,
+        0.0      , 0.0      , 0.0     , 1.0
+    );
+
+    gl_Position = scale * gl_Position;
     
     _Color = in_Color;
     _TexCoord = TexCoord;

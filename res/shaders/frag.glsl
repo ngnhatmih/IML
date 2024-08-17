@@ -15,6 +15,8 @@ void main() {
         Color = texture(_texture1, _TexCoord);
     } else if (texture_unit == 1) {
         Color = texture(_textur2e2, _TexCoord);
+    } else if (texture_unit == 2) {
+        Color = mix(texture(_texture1, _TexCoord), texture(_textur2e2, _TexCoord), 0.2);
     } else {
         Color = vec4(_Color, 1.0);
     }

@@ -95,3 +95,7 @@ void Shader::setUniform(const char *name, bool value) {
     setUniform(name, (int) value);
 }
 
+void Shader::setUniform(const char *name, glm::vec3 value) {
+    int uniform_location = glGetUniformLocation(shaderProgram, name);
+    glUniform3fv(uniform_location, 1, glm::value_ptr(value));
+}

@@ -127,9 +127,11 @@ void Game::render() {
     static int texture_unit = 0;
     static float x_offset = 0.f;
     static float y_offset = 0.f;
+    static float scales[3] = {1.f, 1.f, 1.f};
+
     static int shape = 0;
     const char *modes[3] = {"LINE", "FILL", "POINT"};
-    const char *texture_units[3] = {"texture1", "texture2", "none"};
+    const char *texture_units[4] = {"texture1", "texture2", "mix", "none"};
     {
         ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
         ImGui::Begin("HELLO");
@@ -144,6 +146,7 @@ void Game::render() {
         }
 
         ImGui::DragFloat("alpha", &alpha, 0.01f, 0.f, glm::pi<float>());
+        ImGui::DragFloat3("scale", scales, 0.1f, 1.f, 5.f);
 
         float padding = 4.f;
         ImVec2 textSize = ImGui::CalcTextSize("OFF");
@@ -183,11 +186,12 @@ void Game::render() {
     glBindTexture(GL_TEXTURE_2D, texture2);
 
     shader->useProgram();
-    shader->setUniform("alpha", alpha);
+    shader->setUniform("alpha", 0);
     shader->setUniform("upside_down", upside_down);
     shader->setUniform("x_offset", x_offset);
     shader->setUniform("y_offset", y_offset);
     shader->setUniform("texture_unit", texture_unit);
+    shader->setUniform("scales", glm::vec3(scales[0], scales[1], scales[2]));
 
     glBindVertexArray(VAO);
     if (shape == 0) {
@@ -275,7 +279,7 @@ void Game::processData() {
     glGenTextures(1, &texture2);
     SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "GENERATED texture = %u", texture2);
     glBindTexture(GL_TEXTURE_2D, texture2);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
     glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
     glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
     // SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "ADDED IMAGE TO TEXTURE: (%d, %d)", w, h);
